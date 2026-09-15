@@ -290,6 +290,8 @@ def report_feedback(base, output, *, report_path=None):
         runtime_change = read(base / "server-runtime-change.json")
         write_json(output / "server-runtime-change.json", runtime_change)
         content += "\n## Исполнение разметки\n\nПосле повторных CUDA-сбоев llama.cpp выключено ускорение CUDA Graphs (`GGML_CUDA_DISABLE_GRAPHS=1`). Веса, квантовка, промпт и параметры запросов сохранены; успешные ответы до переключения использованы из журнала. Изменение режима исполнения означает, что не все метки получены при идентичной конфигурации GPU-оптимизаций. Проверка стабильности сохранена в runtime-validation; это не независимая проверка смысловой точности.\n"
+        if runtime_change.get("context_tokens"):
+            content += f"\nПользователь также снизил серверный контекст до {runtime_change['context_tokens']} токенов для увеличения свободной VRAM. Влияние этих двух изменений по отдельности не оценивалось.\n"
     write_text(base / "report.md", content)
     if report_path:
         write_text(report_path, content)

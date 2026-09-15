@@ -57,6 +57,9 @@ def main():
     print("Starting runtime stability trial:", len(selected), "pending requests", flush=True)
     started = time.perf_counter()
     result = run_judge(selected, cfg, out, repeats=1, retry_errors=True)
+    if result["unattempted_calls"] and not result.get("stopped_due_to_transport"):
+        # A persistently malformed first generation is not a server crash.
+        result = run_judge(selected, cfg, out, repeats=1, retry_errors=True)
     records = read_jsonl(out / "calls.jsonl")
     # Never overwrite a successful result; retain all failed attempt history on replacement.
     with closing(sqlite3.connect(main_journal)) as db:
