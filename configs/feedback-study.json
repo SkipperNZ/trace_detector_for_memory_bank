@@ -1,0 +1,20 @@
+{
+  "version": "feedback-study-v1",
+  "seed": 42,
+  "pilot_messages": 256,
+  "pilot_min_valid_fraction": 0.95,
+  "C": [0.1, 1.0, 10.0, 100.0],
+  "balanced": [false, true],
+  "epochs": 3,
+  "learning_rate": 0.00002,
+  "head_learning_rate": 0.0002,
+  "weight_decay": 0.01,
+  "effective_batch_size": 32,
+  "bootstrap_replicates": 2000,
+  "latency_sample_messages": 100,
+  "selection": "Mean calibration macro-F1 across two independent signals; then mean calibration yes F1; then smaller artifact. No test selection.",
+  "encoders": [
+    {"name": "e5", "model": "intfloat/multilingual-e5-small", "revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3", "prefix": "query: ", "max_length": 512, "batch_size": 32, "microbatch": 4, "gradient_checkpointing": false},
+    {"name": "bge-m3", "model": "BAAI/bge-m3", "revision": "5617a9f61b028005a4858fdac845db406aefb181", "prefix": "", "max_length": 512, "batch_size": 8, "microbatch": 2, "gradient_checkpointing": true}
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "base_url": "SET_ACTUAL_BASE_URL_ENDING_IN_V1",
+  "model": "SET_ACTUAL_SERVED_MODEL_ID",
+  "deployment_id": "SET_DEPLOYMENT_REVISION_OR_MANIFEST_ID",
+  "api_key_env": "MB_JUDGE_API_KEY",
+  "temperature": 0.0,
+  "max_tokens": 4096,
+  "max_input_chars": 20000,
+  "timeout_seconds": 60,
+  "concurrency": 1,
+  "retries": 0,
+  "response_format": {
+    "type": "json_object"
+  },
+  "extra_body": {
+    "reasoning_effort": "low",
+    "chat_template_kwargs": {
+      "enable_thinking": true
+    }
+  },
+  "task": "sentiment",
+  "prompt_version": "sentiment-content-valence-v2",
+  "prompt_file": "../prompts/sentiment.txt"
+}

@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "memory-trace-detector"
+version = "0.1.0"
+description = "Offline, causal evaluation of agent traces for Memory Bank research"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+linear = ["numpy>=1.26,<3", "scikit-learn>=1.6,<2"]
+ml = ["numpy>=1.26,<3", "scikit-learn>=1.6,<2", "sentence-transformers>=5.4,<6", "torch>=2.6,<3"]
+dataset = ["pyarrow>=17,<25"]
+experiments = ["matplotlib>=3.9,<4", "psutil>=7,<8"]
+dev = ["black>=24.10,<27"]
+
+[project.scripts]
+mb-trace = "memory_trace.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.black]
+target-version = ["py311"]
+line-length = 100

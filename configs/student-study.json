@@ -1,0 +1,28 @@
+{
+  "format": "sentiment-study-policy-v1",
+  "seed": 42,
+  "teacher_version": "4bc20dc9ef8b6f15be2f478f2d55949c64a70ca0bd5a02981f748c531d854104",
+  "encoder_model": "intfloat/multilingual-e5-small",
+  "encoder_revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3",
+  "learning_curve_messages": [500, 2000],
+  "tfidf_C": [0.1, 1.0, 10.0],
+  "encoder_C": [0.1, 1.0, 10.0, 100.0],
+  "class_weight_balanced": [false, true],
+  "selection": "Highest calibration macro-F1, then agreement, then smaller model artifact. No test metrics used.",
+  "temperature_calibration": "Minimize calibration NLL over [0.25,4]; keep 1 if no improvement.",
+  "recall_targets": [0.95, 0.98, 0.99],
+  "audit_rates": [0.1, 0.2],
+  "bootstrap_replicates": 2000,
+  "prevalence_replicates": 5000,
+  "finetune": {
+    "condition": "best full-train baseline calibration macro-F1 < 0.90 and at least 0.10 above majority",
+    "learning_rate": 0.00002,
+    "head_learning_rate": 0.0002,
+    "epochs": 3,
+    "document_batch_size": 4,
+    "gradient_accumulation_steps": 8,
+    "weight_decay": 0.01,
+    "gradient_clip_norm": 1.0,
+    "selection": "Highest calibration macro-F1, then agreement; evaluate only after each complete epoch."
+  }
+}
