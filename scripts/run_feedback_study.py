@@ -24,6 +24,11 @@ def main():
     p.add_argument("--device", choices=["cpu", "cuda", "mps"], default="cpu")
     p.add_argument("--qwen-compose-dir", type=Path)
     p.add_argument("--stop-after-pilot", action="store_true")
+    p.add_argument(
+        "--http-timeout-seconds",
+        type=float,
+        help="Operational HTTP wait override; model request and label cache remain identical",
+    )
     a = p.parse_args()
     root = Path(__file__).resolve().parents[1]
     base = a.base.resolve()
@@ -48,6 +53,12 @@ def main():
         "HF_HUB_DISABLE_TELEMETRY": "1",
         "HF_HUB_DISABLE_PROGRESS_BARS": "1",
     }
+    if a.http_timeout_seconds is not None:
+        from memory_trace.judge import effective_http_timeout
+
+        os.environ["MB_JUDGE_HTTP_TIMEOUT_SECONDS"] = str(a.http_timeout_seconds)
+        effective_http_timeout(feedback_config(a.config))
+        env["MB_JUDGE_HTTP_TIMEOUT_SECONDS"] = str(a.http_timeout_seconds)
     common = [
         "--base",
         str(base),

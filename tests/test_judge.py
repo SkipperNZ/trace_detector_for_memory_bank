@@ -287,6 +287,21 @@ class JudgeTests(unittest.TestCase):
             self.assertEqual(report["unattempted_calls"], 11)
             self.assertEqual(report["labeled_messages"], 0)
 
+    def test_transport_timeout_override_preserves_request_version_and_is_recorded(self):
+        from memory_trace.judge import effective_http_timeout
+
+        version = self.config.version
+        with patch.dict("os.environ", {"MB_JUDGE_HTTP_TIMEOUT_SECONDS": "300"}):
+            self.assertEqual(effective_http_timeout(self.config), 300)
+            self.assertEqual(self.config.version, version)
+            record = call_judge(self.examples[0], 0, self.config, response)
+            self.assertEqual(record["effective_http_timeout_seconds"], 300)
+            self.assertEqual(record["runtime_status"], "ok")
+        for value in ("0", "nan", "inf", "-1"):
+            with patch.dict("os.environ", {"MB_JUDGE_HTTP_TIMEOUT_SECONDS": value}):
+                with self.assertRaises(ValueError):
+                    effective_http_timeout(self.config)
+
     def test_mid_run_outage_stops_new_requests_and_resume_reuses_successes(self):
         counter = [0]
 

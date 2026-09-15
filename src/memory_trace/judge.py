@@ -1,6 +1,7 @@
 """Resumable LLM-as-a-judge via a configured chat-completions deployment."""
 
 import json
+import math
 import os
 import sqlite3
 import time
@@ -268,6 +269,14 @@ class _NoRedirect(urllib.request.HTTPRedirectHandler):
         raise ValueError("Judge endpoint redirected; configure its final base_url explicitly")
 
 
+def effective_http_timeout(config):
+    """Transport wait override; does not change the actual model request or cache key."""
+    value = float(os.environ.get("MB_JUDGE_HTTP_TIMEOUT_SECONDS", config.timeout_seconds))
+    if not math.isfinite(value) or not 0 < value <= 3600:
+        raise ValueError("HTTP timeout override must be finite and in (0, 3600]")
+    return value
+
+
 def http_request(payload: dict, config: JudgeConfig) -> dict:
     headers = {"Content-Type": "application/json"}
     token = os.environ.get(config.api_key_env)
@@ -281,7 +290,7 @@ def http_request(payload: dict, config: JudgeConfig) -> dict:
         headers=headers,
     )
     with urllib.request.build_opener(_NoRedirect()).open(
-        request, timeout=config.timeout_seconds
+        request, timeout=effective_http_timeout(config)
     ) as response:
         return json.load(response)
 
@@ -295,6 +304,7 @@ def call_judge(example: dict, repeat: int, config: JudgeConfig, request_fn=http_
         "repeat": repeat,
         "judge_version": config.version,
         "prompt_hash": digest(prompt),
+        "effective_http_timeout_seconds": effective_http_timeout(config),
     }
     if sum(len(m["content"]) for m in prompt) > config.max_input_chars:
         return {
@@ -480,6 +490,7 @@ def run_judge(
             "run_id": run_id,
             "judge_version": config.version,
             "config": asdict(config),
+            "effective_http_timeout_seconds": effective_http_timeout(config),
             "prompt_version": config.prompt[0],
             "system_prompt": config.prompt[1],
             **(
