@@ -359,7 +359,8 @@ class JudgeTests(unittest.TestCase):
                 )
             )
             config = read_config(path)
-            self.assertEqual(Path(config.api_key_file), Path(temp) / "secret.txt")
+            # macOS /var symlink and Windows 8.3 temp aliases resolve to the same file.
+            self.assertEqual(Path(config.api_key_file), (Path(temp) / "secret.txt").resolve())
 
     def test_prompt_file_is_relative_and_fingerprint_uses_content(self):
         with tempfile.TemporaryDirectory() as temp:

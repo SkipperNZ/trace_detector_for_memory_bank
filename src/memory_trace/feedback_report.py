@@ -264,6 +264,12 @@ def report_feedback(base, output, *, report_path=None):
         lines.append(
             f"| {r['name']}{tag} | {r['calibration']['mean_macro_f1']:.4f} | {r['test']['mean_macro_f1']:.4f} | {a['precision']:.3f} / {a['recall']:.3f} / {a['f1']:.3f} | {b['precision']:.3f} / {b['recall']:.3f} / {b['f1']:.3f} | {r['runtime']['p50_ms']:.1f} / {r['runtime']['p95_ms']:.1f} | {r['artifact_bytes']/2**20:.1f} |"
         )
+    baseline = evaluation.get("majority_baseline")
+    if baseline:
+        lines += [
+            "",
+            f"Контрольная модель, всегда выдающая самый частый train-класс ({baseline['labels']}): test mean macro-F1 {baseline['test']['mean_macro_f1']:.4f}. Macro-F1 во всех таблицах усредняется по трём фиксированным классам, включая отсутствующие (их F1 равен 0).",
+        ]
     lines += [
         "",
         f"Выбрана **{winner['name']}** до теста, по среднему calibration macro-F1. Сетка C, class weights, 3 эпохи, seed 42 и гиперпараметры закреплены заранее в configs/feedback-study.json. Один seed не оценивает вариативность обучения. Полные accuracy, confusion matrices, support каждого класса и session-bootstrap интервалы — в evaluation.json.",
