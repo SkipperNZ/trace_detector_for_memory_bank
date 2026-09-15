@@ -287,6 +287,36 @@ class JudgeTests(unittest.TestCase):
             self.assertEqual(report["unattempted_calls"], 11)
             self.assertEqual(report["labeled_messages"], 0)
 
+    def test_mid_run_outage_stops_new_requests_and_resume_reuses_successes(self):
+        counter = [0]
+
+        def outage(payload, config):
+            counter[0] += 1
+            if counter[0] > 2:
+                raise urllib.error.URLError("server went offline")
+            return response(payload, config)
+
+        config = replace(self.config, concurrency=1, retries=0)
+        with tempfile.TemporaryDirectory() as temp:
+            out = Path(temp)
+            report = run_judge(self.examples, config, out, repeats=1, request_fn=outage)
+            self.assertTrue(report["stopped_due_to_transport"])
+            self.assertEqual(counter[0], 3)
+            self.assertEqual(report["successful_calls"], 2)
+            self.assertEqual(report["unattempted_calls"], 3)
+            resumed = [0]
+
+            def recovered(payload, config):
+                resumed[0] += 1
+                return response(payload, config)
+
+            report = run_judge(
+                self.examples, config, out, repeats=1, retry_errors=True, request_fn=recovered
+            )
+            self.assertFalse(report["stopped_due_to_transport"])
+            self.assertEqual(report["successful_calls"], 6)
+            self.assertEqual(resumed[0], 4)
+
     def test_failed_attempts_count_and_retry_is_saved(self):
         number = [0]
 

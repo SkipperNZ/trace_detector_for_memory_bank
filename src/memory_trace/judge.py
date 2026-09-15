@@ -7,7 +7,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from contextlib import closing
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
@@ -499,6 +499,7 @@ def run_judge(
             key: json.loads(value) for key, value in db.execute("SELECT id, record FROM calls")
         }
         calls, pending = [], []
+        stopped_due_to_transport = False
         for ex in examples:
             for repeat in range(repeats):
                 key = digest([ex["input_id"], config.version, repeat])
@@ -524,6 +525,12 @@ def run_judge(
             if progress:
                 progress(len(calls), len(examples) * repeats)
 
+        def transport_failed(record):
+            if record["runtime_status"] != "error" or not record.get("attempts"):
+                return False
+            last = record["attempts"][-1]
+            return last.get("response") is None or last.get("http_status") is not None
+
         # A canary prevents a wrong endpoint/model from failing every request in the dataset.
         if pending:
             first = call_judge(*pending.pop(0), config, request_fn=request_fn)
@@ -539,15 +546,32 @@ def run_judge(
                 and first["attempts"][-1].get("http_status") is None
             )
             if first["runtime_status"] == "error" and not recorded_generation_retry:
+                stopped_due_to_transport = transport_failed(first)
                 pending = []
         if pending:
+            # Bound in-flight requests. If the server dies mid-run, retain completed
+            # results and stop scheduling new work instead of draining the dataset
+            # into connection errors. Already-running calls finish and are saved.
             with ThreadPoolExecutor(max_workers=config.concurrency) as executor:
-                futures = [
-                    executor.submit(call_judge, ex, repeat, config, request_fn)
-                    for ex, repeat in pending
-                ]
-                for future in as_completed(futures):
-                    save(future.result())
+                remaining = iter(pending)
+                active = set()
+
+                def fill():
+                    while not stopped_due_to_transport and len(active) < config.concurrency:
+                        job = next(remaining, None)
+                        if job is None:
+                            break
+                        ex, repeat = job
+                        active.add(executor.submit(call_judge, ex, repeat, config, request_fn))
+
+                fill()
+                while active:
+                    done, active = wait(active, return_when=FIRST_COMPLETED)
+                    for future in done:
+                        record = future.result()
+                        save(record)
+                        stopped_due_to_transport |= transport_failed(record)
+                    fill()
     calls.sort(key=lambda c: (c["input_id"], c["repeat"]))
     labeled_examples, labels, unresolved = summarize(examples, calls, config, repeats)
     write_jsonl(output / "calls.jsonl", calls)
@@ -565,6 +589,7 @@ def run_judge(
         "labeled_messages": len(labels),
         "unresolved_messages": len(unresolved),
         "judge_version": config.version,
+        "stopped_due_to_transport": stopped_due_to_transport,
     }
     write_json(output / "summary.json", report)
     return report

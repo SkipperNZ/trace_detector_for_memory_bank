@@ -216,8 +216,16 @@ def label_feedback(base, config_path, *, pilot=False):
             )
 
     result = run_judge(rows, config, out, repeats=1, progress=progress)
+    if result.get("stopped_due_to_transport"):
+        raise RuntimeError(
+            "Judge endpoint unavailable; stopped immediately with journal retained. Restore the server and resume."
+        )
     if result["failed_calls"] or result["unattempted_calls"]:
         result = run_judge(rows, config, out, repeats=1, retry_errors=True, progress=progress)
+    if result.get("stopped_due_to_transport"):
+        raise RuntimeError(
+            "Judge endpoint unavailable during retry; restore the server and resume."
+        )
     if result["unattempted_calls"]:
         raise RuntimeError("Teacher run incomplete; resumable journal retained")
     if pilot:
