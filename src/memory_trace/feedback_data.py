@@ -5,6 +5,7 @@ import os
 import sqlite3
 import time
 import urllib.request
+from contextlib import closing
 from collections import Counter
 from dataclasses import replace
 from datetime import datetime, timezone
@@ -136,6 +137,43 @@ def verify_deployment(config, output):
     return result
 
 
+def remaining_estimate(base):
+    """Estimate only unfinished/retry calls after a restart, without a model request."""
+    from datetime import timedelta
+
+    base = Path(base)
+    design, pilot = read(base / "design.json"), read(base / "pilot-gate.json")
+    journal = base / "teacher/calls.sqlite3"
+    finished, durations = set(), []
+    if journal.exists():
+        with closing(sqlite3.connect(journal.resolve().as_uri() + "?mode=ro", uri=True)) as db:
+            for (record,) in db.execute("SELECT record FROM calls"):
+                call = json.loads(record)
+                if call["judge_version"] != design["judge_version"]:
+                    raise ValueError("Cached judge differs from frozen design")
+                if call["runtime_status"] in {"ok", "not_evaluated"}:
+                    finished.add(call["input_id"])
+                if call["runtime_status"] == "ok":
+                    durations.append(sum(a["elapsed_seconds"] for a in call["attempts"]))
+    else:
+        finished = {r["input_id"] for r in read_jsonl(base / "pilot/labels.jsonl")}
+    remaining = max(0, design["canonical_messages"] - len(finished))
+    mean = sum(durations) / len(durations) if durations else pilot["mean_seconds_per_call"]
+    # Conservative serial estimate also remains safe when a deployment allows concurrency.
+    seconds = remaining * mean * 1.35 + 2400
+    now = datetime.now(timezone.utc)
+    result = {
+        "remaining_or_retry_calls": remaining,
+        "completed_cached_calls": len(finished),
+        "mean_seconds_per_call": mean,
+        "conservative_remaining_seconds_with_training": seconds,
+        "measured_at": now.isoformat(),
+        "estimated_completion": (now + timedelta(seconds=seconds)).isoformat(),
+    }
+    write_json(base / "remaining-estimate.json", result)
+    return result
+
+
 def label_feedback(base, config_path, *, pilot=False):
     base = Path(base)
     config = feedback_config(config_path)
@@ -152,7 +190,7 @@ def label_feedback(base, config_path, *, pilot=False):
         if not read(base / "pilot-gate.json")["passed"]:
             raise ValueError("Pilot technical validity gate not met")
         # Exact requests, including IDs, are copied from the pilot journal.
-        with sqlite3.connect(out / "calls.sqlite3") as db:
+        with closing(sqlite3.connect(out / "calls.sqlite3")) as db:
             db.execute(
                 "CREATE TABLE IF NOT EXISTS calls (id TEXT PRIMARY KEY, record TEXT NOT NULL)"
             )

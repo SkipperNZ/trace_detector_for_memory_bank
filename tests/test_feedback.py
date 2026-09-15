@@ -3,6 +3,7 @@ import importlib.util
 import json
 import tempfile
 import unittest
+from contextlib import closing
 from pathlib import Path
 
 from memory_trace.feedback import (
@@ -106,6 +107,38 @@ class FeedbackTests(unittest.TestCase):
             self.assertEqual(label["signals"]["dissatisfaction"]["label"], "no")
             self.assertEqual(label["label_source"], "llm_judge")
         self.assertEqual(len(calls), 1)
+
+    def test_restart_estimate_counts_only_pending_and_failed_requests(self):
+        import sqlite3
+        from memory_trace.feedback_data import remaining_estimate
+        from memory_trace.io import write_json
+
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            write_json(base / "design.json", {"judge_version": "fixture", "canonical_messages": 5})
+            write_json(base / "pilot-gate.json", {"mean_seconds_per_call": 99})
+            (base / "teacher").mkdir()
+            with closing(sqlite3.connect(base / "teacher/calls.sqlite3")) as db:
+                db.execute("CREATE TABLE calls (record TEXT)")
+                for i, status in enumerate(("ok", "not_evaluated", "error")):
+                    db.execute(
+                        "INSERT INTO calls VALUES (?)",
+                        (
+                            json.dumps(
+                                {
+                                    "input_id": str(i),
+                                    "judge_version": "fixture",
+                                    "runtime_status": status,
+                                    "attempts": [{"elapsed_seconds": 10}],
+                                }
+                            ),
+                        ),
+                    )
+                db.commit()
+            estimate = remaining_estimate(base)
+            self.assertEqual(estimate["remaining_or_retry_calls"], 3)
+            self.assertEqual(estimate["mean_seconds_per_call"], 10)
+            self.assertEqual(estimate["conservative_remaining_seconds_with_training"], 2440.5)
 
 
 @unittest.skipUnless(importlib.util.find_spec("sklearn"), "ML extra required")

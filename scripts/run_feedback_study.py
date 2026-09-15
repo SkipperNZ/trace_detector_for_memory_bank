@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from memory_trace.feedback import feedback_config
-from memory_trace.feedback_data import read, verify_deployment
+from memory_trace.feedback_data import read, verify_deployment, remaining_estimate
 from memory_trace.io import write_json
 
 
@@ -136,10 +136,10 @@ def main():
         # Always validate source/config/policy on resume, even when prepare has completed.
         stage("prepare", resume=False)
         stage("pilot")
-        eta = read(base / "pilot-gate.json")
+        eta = remaining_estimate(base)
         print(
             "Conservative remaining hours including training:",
-            round(eta["estimated_total_remaining_seconds_with_training"] / 3600, 2),
+            round(eta["conservative_remaining_seconds_with_training"] / 3600, 2),
             flush=True,
         )
         if a.stop_after_pilot:
