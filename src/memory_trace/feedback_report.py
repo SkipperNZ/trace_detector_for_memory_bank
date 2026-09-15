@@ -138,8 +138,16 @@ def evaluate_feedback(base):
 
 def report_feedback(base, output, *, report_path=None):
     import numpy as np
+    import torch
+
+    # Match the CPU reduction settings used for the frozen evaluation predictions.
+    torch.set_num_threads(8)
 
     base, output = Path(base), Path(output)
+    try:
+        output_display = output.resolve().relative_to(Path.cwd()).as_posix()
+    except ValueError:
+        output_display = output.as_posix()
     design, census, selection, evaluation = (
         read(base / f) for f in ("design.json", "census.json", "selection.json", "evaluation.json")
     )
@@ -180,10 +188,15 @@ def report_feedback(base, output, *, report_path=None):
     predictions = predictor.predict(rows)
     expected = read_jsonl(base / f"test-predictions/{winner['name']}.jsonl")
     difference = 0.0
+    label_mismatches = 0
     for a, b in zip(predictions, expected, strict=True):
         if a["input_id"] != b["input_id"]:
             raise ValueError("Export prediction IDs differ")
         for t in TASKS:
+            label_mismatches += a["signals"][t]["label"] != b["signals"][t]["label"]
+            values = [a["signals"][t]["probabilities"][c] for c in CLASSES]
+            if not np.isfinite(values).all():
+                raise ValueError("Exported probabilities are not finite")
             difference = max(
                 difference,
                 max(
@@ -191,16 +204,22 @@ def report_feedback(base, output, *, report_path=None):
                     for c in CLASSES
                 ),
             )
-    if difference > 1e-7:
-        raise ValueError("Exported probabilities differ")
     write_json(
         base / "export-verification.json",
         {
             "messages": len(rows),
             "probability_max_abs_difference": difference,
+            "label_mismatches": label_mismatches,
+            "cpu_threads": torch.get_num_threads(),
+            "passed": difference <= 1e-7 and label_mismatches == 0,
             "model_version": winner["model_version"],
         },
     )
+    if difference > 1e-7 or label_mismatches:
+        raise ValueError(
+            f"Exported predictions differ: max probability difference={difference:.9g}; "
+            f"label mismatches={label_mismatches}"
+        )
     write_json(
         output / "environment.json",
         {
@@ -276,7 +295,7 @@ def report_feedback(base, output, *, report_path=None):
         "",
         "Окно энкодеров 512 токенов; весь переданный видимый контекст сохраняется через окна. E5 использует query-префикс и штатный пулинг, BGE-M3 — без префикса и с CLS. Теги причин — дополнительные метки учителя; модели обучены только на двух основных признаках.",
         "",
-        f"Экспорт: `{output.as_posix()}`. Повторная загрузка и предсказания на {len(rows)} test-входах: max |Δp|={difference:.3g}.",
+        f"Экспорт: `{output_display}`. Повторная загрузка и предсказания на {len(rows)} test-входах: max |Δp|={difference:.3g}.",
         "",
         "## Перенос в контур компании",
         "",
@@ -297,6 +316,6 @@ def report_feedback(base, output, *, report_path=None):
         write_text(report_path, content)
     write_text(
         output / "README.md",
-        f"# Feedback model: {winner['name']}\n\nДва независимых признака: dissatisfaction / correction; классы no / yes / unclear. Режим shadow.\n\n```text\npython scripts/predict_feedback.py INPUT.jsonl --model-dir {output.as_posix()} --out predictions.jsonl --device cpu\n```\n\nВход и установка описаны в docs/feedback-guide.md. Учитель при инференсе не используется. Это модель воспроизведения фиксированных автоматических меток.\n",
+        f"# Feedback model: {winner['name']}\n\nДва независимых признака: dissatisfaction / correction; классы no / yes / unclear. Режим shadow.\n\n```text\npython scripts/predict_feedback.py INPUT.jsonl --model-dir {output_display} --out predictions.jsonl --device cpu\n```\n\nВход и установка описаны в docs/feedback-guide.md. Учитель при инференсе не используется. Это модель воспроизведения фиксированных автоматических меток.\n",
     )
     return {"winner": winner["name"], "report": str(base / "report.md"), "export": str(output)}

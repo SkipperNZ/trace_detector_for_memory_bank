@@ -42,6 +42,8 @@ def main():
         else {"stages": [], "started_at": datetime.now(timezone.utc).isoformat()}
     )
     state.update(status="running")
+    for stale in ("error_type", "error", "paused_at"):
+        state.pop(stale, None)
     env = {
         **os.environ,
         "PYTHONUTF8": "1",

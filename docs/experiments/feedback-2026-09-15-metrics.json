@@ -1,0 +1,1463 @@
+{
+  "scope": "Agreement with frozen automatic Qwen labels, not independent gold. No Qwen calls during student inference.",
+  "dataset": {
+    "messages": 8949,
+    "unique_requests": 7743,
+    "name": "davanstrien/agent-trace-sentiment",
+    "revision": "434c8d7b267672cc4638bb5a80fb0da13d18d76d",
+    "test_scope": "New task labels on session-held-out portion of an already explored public corpus; not independent human gold or corporate validation."
+  },
+  "census": {
+    "messages": 8949,
+    "canonical_requests": 7743,
+    "labelled_messages": 8924,
+    "unlabelled_messages": 25,
+    "tasks": {
+      "dissatisfaction": {
+        "counts": {
+          "no": 8469,
+          "yes": 374,
+          "unclear": 81
+        },
+        "yes_fraction_all_messages": 0.04179237903676388,
+        "yes_fraction_among_technical_successes": 0.04190945764231287,
+        "yes_fraction_bounds_with_unclear_and_missing": [
+          0.04179237903676388,
+          0.05363727790814616
+        ],
+        "sessions_with_yes": 202
+      },
+      "correction": {
+        "counts": {
+          "no": 7990,
+          "yes": 577,
+          "unclear": 357
+        },
+        "yes_fraction_all_messages": 0.0644764778187507,
+        "yes_fraction_among_technical_successes": 0.06465710443747198,
+        "yes_fraction_bounds_with_unclear_and_missing": [
+          0.0644764778187507,
+          0.10716281148731702
+        ],
+        "sessions_with_yes": 275
+      }
+    },
+    "reason_tags": {
+      "wrong_result": 451,
+      "unnecessary_action": 34,
+      "ignored_requirement": 67,
+      "repeated_mistake": 14,
+      "reported_loop": 4,
+      "reported_backtracking": 1
+    },
+    "teacher_summary": {
+      "examples": 7743,
+      "planned_calls": 7743,
+      "completed_calls": 7743,
+      "successful_calls": 7718,
+      "failed_calls": 20,
+      "not_evaluated_calls": 5,
+      "unattempted_calls": 0,
+      "labeled_messages": 7718,
+      "unresolved_messages": 25,
+      "judge_version": "cde32c461cfd0202900c22ae67005e3ca4617e6ce9cda9571afc3e3275171467",
+      "stopped_due_to_transport": false
+    },
+    "labels_hash": "b4062993b3d95a43648e05954e2fd6a1524f1a9e2ae28a3446af1ac7eefd7d8c",
+    "overlap": {
+      "no/no": 7818,
+      "no/unclear": 281,
+      "no/yes": 370,
+      "yes/yes": 207,
+      "unclear/unclear": 39,
+      "yes/no": 130,
+      "unclear/no": 42,
+      "yes/unclear": 37
+    }
+  },
+  "splits": {
+    "train": {
+      "messages": 5222,
+      "sessions": 971,
+      "hash": "fca63f7daee79542b69e1ff9adada4caf685aa913199a95975bacf43c0c6f665"
+    },
+    "calibration": {
+      "messages": 1157,
+      "sessions": 206,
+      "hash": "167a5132f2cd271de1960467517db59bae45221a079da16acc35faba0697b5e7"
+    },
+    "test": {
+      "messages": 1353,
+      "sessions": 238,
+      "hash": "8ff50d1c90c81d3ef8ad4d5072b35445fb83fad1853bd150334b0b33d0bfcb69"
+    }
+  },
+  "exclusions": {
+    "duplicate_in_higher_priority_split": 1212,
+    "judge_input_limit": 5
+  },
+  "selection": {
+    "winner": "bge-m3-finetuned",
+    "created_at": "2026-09-15T20:57:10.657119+00:00",
+    "criterion": "mean calibration macro-F1; test labels not used for selection"
+  },
+  "evaluation": {
+    "completed_at": "2026-09-15T21:08:26.551710+00:00",
+    "selection_hash": "387bf686c0adde2eae48a4d248cc5bbf79606a456507a370ddaef90fb71dd215",
+    "models": [
+      {
+        "name": "bge-m3-finetuned",
+        "model_version": "311651567e9dc936b3703084c316eb6dacc963ac01a75340df9eedfd4361566d",
+        "selected_on_calibration": true,
+        "calibration": {
+          "tasks": {
+            "dissatisfaction": {
+              "messages": 1154,
+              "agreement": 0.9558058925476604,
+              "macro_f1": 0.6337320269754422,
+              "per_class": {
+                "no": {
+                  "precision": 0.9742883379247016,
+                  "recall": 0.9833178869323448,
+                  "f1": 0.9787822878228782,
+                  "support": 1079
+                },
+                "yes": {
+                  "precision": 0.7090909090909091,
+                  "recall": 0.639344262295082,
+                  "f1": 0.6724137931034483,
+                  "support": 61
+                },
+                "unclear": {
+                  "precision": 0.3,
+                  "recall": 0.21428571428571427,
+                  "f1": 0.25,
+                  "support": 14
+                }
+              },
+              "confusion_matrix": [
+                [
+                  1061,
+                  12,
+                  6
+                ],
+                [
+                  21,
+                  39,
+                  1
+                ],
+                [
+                  7,
+                  4,
+                  3
+                ]
+              ],
+              "nll": 0.15198883707884808,
+              "brier": 0.07278666450946945,
+              "missing_teacher_labels": 3
+            },
+            "correction": {
+              "messages": 1154,
+              "agreement": 0.8578856152512998,
+              "macro_f1": 0.5558306723950895,
+              "per_class": {
+                "no": {
+                  "precision": 0.9165029469548134,
+                  "recall": 0.948170731707317,
+                  "f1": 0.932067932067932,
+                  "support": 984
+                },
+                "yes": {
+                  "precision": 0.6792452830188679,
+                  "recall": 0.32727272727272727,
+                  "f1": 0.44171779141104295,
+                  "support": 110
+                },
+                "unclear": {
+                  "precision": 0.25301204819277107,
+                  "recall": 0.35,
+                  "f1": 0.2937062937062937,
+                  "support": 60
+                }
+              },
+              "confusion_matrix": [
+                [
+                  933,
+                  10,
+                  41
+                ],
+                [
+                  53,
+                  36,
+                  21
+                ],
+                [
+                  32,
+                  7,
+                  21
+                ]
+              ],
+              "nll": 0.3825739778412575,
+              "brier": 0.20188893692490384,
+              "missing_teacher_labels": 3
+            }
+          },
+          "mean_macro_f1": 0.5947813496852659,
+          "mean_yes_f1": 0.5570657922572456
+        },
+        "test": {
+          "tasks": {
+            "dissatisfaction": {
+              "messages": 1348,
+              "agreement": 0.9688427299703264,
+              "macro_f1": 0.6354052583882468,
+              "per_class": {
+                "no": {
+                  "precision": 0.9831029185867896,
+                  "recall": 0.9876543209876543,
+                  "f1": 0.985373364126251,
+                  "support": 1296
+                },
+                "yes": {
+                  "precision": 0.5897435897435898,
+                  "recall": 0.5476190476190477,
+                  "f1": 0.5679012345679012,
+                  "support": 42
+                },
+                "unclear": {
+                  "precision": 0.42857142857142855,
+                  "recall": 0.3,
+                  "f1": 0.35294117647058826,
+                  "support": 10
+                }
+              },
+              "confusion_matrix": [
+                [
+                  1280,
+                  13,
+                  3
+                ],
+                [
+                  18,
+                  23,
+                  1
+                ],
+                [
+                  4,
+                  3,
+                  3
+                ]
+              ],
+              "nll": 0.10742084399090361,
+              "brier": 0.05233616062999582,
+              "missing_teacher_labels": 5
+            },
+            "correction": {
+              "messages": 1348,
+              "agreement": 0.9080118694362018,
+              "macro_f1": 0.6157494832202236,
+              "per_class": {
+                "no": {
+                  "precision": 0.9573070607553367,
+                  "recall": 0.9573070607553367,
+                  "f1": 0.9573070607553367,
+                  "support": 1218
+                },
+                "yes": {
+                  "precision": 0.6226415094339622,
+                  "recall": 0.4125,
+                  "f1": 0.49624060150375937,
+                  "support": 80
+                },
+                "unclear": {
+                  "precision": 0.3246753246753247,
+                  "recall": 0.5,
+                  "f1": 0.3937007874015748,
+                  "support": 50
+                }
+              },
+              "confusion_matrix": [
+                [
+                  1166,
+                  15,
+                  37
+                ],
+                [
+                  32,
+                  33,
+                  15
+                ],
+                [
+                  20,
+                  5,
+                  25
+                ]
+              ],
+              "nll": 0.259438799684208,
+              "brier": 0.1355154454065551,
+              "missing_teacher_labels": 5
+            }
+          },
+          "mean_macro_f1": 0.6255773708042351,
+          "mean_yes_f1": 0.5320709180358303
+        },
+        "intervals": {
+          "dissatisfaction": {
+            "method": "percentile bootstrap resampling complete sessions",
+            "sessions": 238,
+            "replicates": 2000,
+            "seed": 42,
+            "agreement_95": [
+              0.9571915443124196,
+              0.9795064222256941
+            ],
+            "macro_f1_95": [
+              0.5091402522757886,
+              0.7203038231524733
+            ],
+            "yes_recall_95": [
+              0.38636363636363635,
+              0.7096986417657045
+            ]
+          },
+          "correction": {
+            "method": "percentile bootstrap resampling complete sessions",
+            "sessions": 238,
+            "replicates": 2000,
+            "seed": 42,
+            "agreement_95": [
+              0.8924048593892732,
+              0.9249844305356492
+            ],
+            "macro_f1_95": [
+              0.5536233523541859,
+              0.6733628022579877
+            ],
+            "yes_recall_95": [
+              0.3011746987951808,
+              0.5128205128205128
+            ]
+          }
+        },
+        "artifact_bytes": 2288809472,
+        "runtime": {
+          "device": "cpu",
+          "threads": 8,
+          "load_seconds": 8.239878499996848,
+          "batch_seconds": 240.49581309999485,
+          "batch_messages_per_second": 5.62587756751275,
+          "latency_sample_messages": 100,
+          "p50_ms": 52.3843000009947,
+          "p95_ms": 998.3701999943149
+        }
+      },
+      {
+        "name": "bge-m3-frozen",
+        "model_version": "047e1cef9a355754f346a9ab97ea0c87215582c5ae6f0445af343e355c842883",
+        "selected_on_calibration": false,
+        "calibration": {
+          "tasks": {
+            "dissatisfaction": {
+              "messages": 1154,
+              "agreement": 0.9306759098786829,
+              "macro_f1": 0.5347941193037796,
+              "per_class": {
+                "no": {
+                  "precision": 0.9622467771639043,
+                  "recall": 0.9684893419833179,
+                  "f1": 0.9653579676674365,
+                  "support": 1079
+                },
+                "yes": {
+                  "precision": 0.43548387096774194,
+                  "recall": 0.4426229508196721,
+                  "f1": 0.43902439024390244,
+                  "support": 61
+                },
+                "unclear": {
+                  "precision": 0.3333333333333333,
+                  "recall": 0.14285714285714285,
+                  "f1": 0.2,
+                  "support": 14
+                }
+              },
+              "confusion_matrix": [
+                [
+                  1045,
+                  31,
+                  3
+                ],
+                [
+                  33,
+                  27,
+                  1
+                ],
+                [
+                  8,
+                  4,
+                  2
+                ]
+              ],
+              "nll": 0.20654768155089423,
+              "brier": 0.10285019533842436,
+              "missing_teacher_labels": 3
+            },
+            "correction": {
+              "messages": 1154,
+              "agreement": 0.8587521663778163,
+              "macro_f1": 0.5406157297167536,
+              "per_class": {
+                "no": {
+                  "precision": 0.9087378640776699,
+                  "recall": 0.9512195121951219,
+                  "f1": 0.929493545183714,
+                  "support": 984
+                },
+                "yes": {
+                  "precision": 0.5526315789473685,
+                  "recall": 0.38181818181818183,
+                  "f1": 0.45161290322580644,
+                  "support": 110
+                },
+                "unclear": {
+                  "precision": 0.2708333333333333,
+                  "recall": 0.21666666666666667,
+                  "f1": 0.24074074074074073,
+                  "support": 60
+                }
+              },
+              "confusion_matrix": [
+                [
+                  936,
+                  26,
+                  22
+                ],
+                [
+                  55,
+                  42,
+                  13
+                ],
+                [
+                  39,
+                  8,
+                  13
+                ]
+              ],
+              "nll": 0.42202403171360914,
+              "brier": 0.22082707249545006,
+              "missing_teacher_labels": 3
+            }
+          },
+          "mean_macro_f1": 0.5377049245102666,
+          "mean_yes_f1": 0.44531864673485444
+        },
+        "test": {
+          "tasks": {
+            "dissatisfaction": {
+              "messages": 1348,
+              "agreement": 0.9488130563798219,
+              "macro_f1": 0.5218922951188341,
+              "per_class": {
+                "no": {
+                  "precision": 0.9775193798449613,
+                  "recall": 0.9729938271604939,
+                  "f1": 0.9752513534416086,
+                  "support": 1296
+                },
+                "yes": {
+                  "precision": 0.3076923076923077,
+                  "recall": 0.38095238095238093,
+                  "f1": 0.3404255319148936,
+                  "support": 42
+                },
+                "unclear": {
+                  "precision": 0.3333333333333333,
+                  "recall": 0.2,
+                  "f1": 0.25,
+                  "support": 10
+                }
+              },
+              "confusion_matrix": [
+                [
+                  1261,
+                  32,
+                  3
+                ],
+                [
+                  25,
+                  16,
+                  1
+                ],
+                [
+                  4,
+                  4,
+                  2
+                ]
+              ],
+              "nll": 0.1539645242283063,
+              "brier": 0.077943859293478,
+              "missing_teacher_labels": 5
+            },
+            "correction": {
+              "messages": 1348,
+              "agreement": 0.8902077151335311,
+              "macro_f1": 0.559407148805883,
+              "per_class": {
+                "no": {
+                  "precision": 0.9419934640522876,
+                  "recall": 0.9466338259441708,
+                  "f1": 0.9443079443079443,
+                  "support": 1218
+                },
+                "yes": {
+                  "precision": 0.38461538461538464,
+                  "recall": 0.375,
+                  "f1": 0.379746835443038,
+                  "support": 80
+                },
+                "unclear": {
+                  "precision": 0.3695652173913043,
+                  "recall": 0.34,
+                  "f1": 0.3541666666666667,
+                  "support": 50
+                }
+              },
+              "confusion_matrix": [
+                [
+                  1153,
+                  44,
+                  21
+                ],
+                [
+                  42,
+                  30,
+                  8
+                ],
+                [
+                  29,
+                  4,
+                  17
+                ]
+              ],
+              "nll": 0.308486115889549,
+              "brier": 0.16180624630075818,
+              "missing_teacher_labels": 5
+            }
+          },
+          "mean_macro_f1": 0.5406497219623585,
+          "mean_yes_f1": 0.36008618367896583
+        },
+        "intervals": {
+          "dissatisfaction": {
+            "method": "percentile bootstrap resampling complete sessions",
+            "sessions": 238,
+            "replicates": 2000,
+            "seed": 42,
+            "agreement_95": [
+              0.9348241255684279,
+              0.9624610623003195
+            ],
+            "macro_f1_95": [
+              0.4104192538043034,
+              0.630613066648275
+            ],
+            "yes_recall_95": [
+              0.22578629032258063,
+              0.5263654419066531
+            ]
+          },
+          "correction": {
+            "method": "percentile bootstrap resampling complete sessions",
+            "sessions": 238,
+            "replicates": 2000,
+            "seed": 42,
+            "agreement_95": [
+              0.8710380565855317,
+              0.909515504812819
+            ],
+            "macro_f1_95": [
+              0.49491379539876956,
+              0.6199425893993299
+            ],
+            "yes_recall_95": [
+              0.2808988764044944,
+              0.48193308950086056
+            ]
+          }
+        },
+        "artifact_bytes": 2293976619,
+        "runtime": {
+          "device": "cpu",
+          "threads": 8,
+          "load_seconds": 1.3028980000017327,
+          "batch_seconds": 237.1781168000016,
+          "batch_messages_per_second": 5.70457350051778,
+          "latency_sample_messages": 100,
+          "p50_ms": 50.443449999875156,
+          "p95_ms": 951.2815549984225
+        }
+      },
+      {
+        "name": "e5-finetuned",
+        "model_version": "0010d5d7bf246628264ff5ecb5457aa94bfb4776c2aaeaf5e1764cb0791d3208",
+        "selected_on_calibration": false,
+        "calibration": {
+          "tasks": {
+            "dissatisfaction": {
+              "messages": 1154,
+              "agreement": 0.9462738301559792,
+              "macro_f1": 0.5764162939577304,
+              "per_class": {
+                "no": {
+                  "precision": 0.9670631290027447,
+                  "recall": 0.9796107506950881,
+                  "f1": 0.9732965009208103,
+                  "support": 1079
+                },
+                "yes": {
+                  "precision": 0.6470588235294118,
+                  "recall": 0.5409836065573771,
+                  "f1": 0.5892857142857143,
+                  "support": 61
+                },
+                "unclear": {
+                  "precision": 0.2,
+                  "recall": 0.14285714285714285,
+                  "f1": 0.16666666666666666,
+                  "support": 14
+                }
+              },
+              "confusion_matrix": [
+                [
+                  1057,
+                  15,
+                  7
+                ],
+                [
+                  27,
+                  33,
+                  1
+                ],
+                [
+                  9,
+                  3,
+                  2
+                ]
+              ],
+              "nll": 0.16296657813743845,
+              "brier": 0.08282446278576795,
+              "missing_teacher_labels": 3
+            },
+            "correction": {
+              "messages": 1154,
+              "agreement": 0.8821490467937608,
+              "macro_f1": 0.5512143306973112,
+              "per_class": {
+                "no": {
+                  "precision": 0.8996282527881041,
+                  "recall": 0.983739837398374,
+                  "f1": 0.9398058252427185,
+                  "support": 984
+                },
+                "yes": {
+                  "precision": 0.7454545454545455,
+                  "recall": 0.37272727272727274,
+                  "f1": 0.49696969696969695,
+                  "support": 110
+                },
+                "unclear": {
+                  "precision": 0.391304347826087,
+                  "recall": 0.15,
+                  "f1": 0.21686746987951808,
+                  "support": 60
+                }
+              },
+              "confusion_matrix": [
+                [
+                  968,
+                  7,
+                  9
+                ],
+                [
+                  64,
+                  41,
+                  5
+                ],
+                [
+                  44,
+                  7,
+                  9
+                ]
+              ],
+              "nll": 0.32025119843098643,
+              "brier": 0.1748962166601667,
+              "missing_teacher_labels": 3
+            }
+          },
+          "mean_macro_f1": 0.5638153123275208,
+          "mean_yes_f1": 0.5431277056277056
+        },
+        "test": {
+          "tasks": {
+            "dissatisfaction": {
+              "messages": 1348,
+              "agreement": 0.9658753709198813,
+              "macro_f1": 0.5883439367649894,
+              "per_class": {
+                "no": {
+                  "precision": 0.9800613496932515,
+                  "recall": 0.9861111111111112,
+                  "f1": 0.9830769230769231,
+                  "support": 1296
+                },
+                "yes": {
+                  "precision": 0.6285714285714286,
+                  "recall": 0.5238095238095238,
+                  "f1": 0.5714285714285714,
+                  "support": 42
+                },
+                "unclear": {
+                  "precision": 0.2222222222222222,
+                  "recall": 0.2,
+                  "f1": 0.21052631578947367,
+                  "support": 10
+                }
+              },
+              "confusion_matrix": [
+                [
+                  1278,
+                  12,
+                  6
+                ],
+                [
+                  19,
+                  22,
+                  1
+                ],
+                [
+                  7,
+                  1,
+                  2
+                ]
+              ],
+              "nll": 0.11325886760245404,
+              "brier": 0.05299125364561422,
+              "missing_teacher_labels": 5
+            },
+            "correction": {
+              "messages": 1348,
+              "agreement": 0.9243323442136498,
+              "macro_f1": 0.6113048704546293,
+              "per_class": {
+                "no": {
+                  "precision": 0.9390625,
+                  "recall": 0.986863711001642,
+                  "f1": 0.9623698959167334,
+                  "support": 1218
+                },
+                "yes": {
+                  "precision": 0.6744186046511628,
+                  "recall": 0.3625,
+                  "f1": 0.4715447154471545,
+                  "support": 80
+                },
+                "unclear": {
+                  "precision": 0.6,
+                  "recall": 0.3,
+                  "f1": 0.4,
+                  "support": 50
+                }
+              },
+              "confusion_matrix": [
+                [
+                  1202,
+                  12,
+                  4
+                ],
+                [
+                  45,
+                  29,
+                  6
+                ],
+                [
+                  33,
+                  2,
+                  15
+                ]
+              ],
+              "nll": 0.22194030710074725,
+              "brier": 0.11808303737760191,
+              "missing_teacher_labels": 5
+            }
+          },
+          "mean_macro_f1": 0.5998244036098094,
+          "mean_yes_f1": 0.5214866434378629
+        },
+        "intervals": {
+          "dissatisfaction": {
+            "method": "percentile bootstrap resampling complete sessions",
+            "sessions": 238,
+            "replicates": 2000,
+            "seed": 42,
+            "agreement_95": [
+              0.9511024867616652,
+              0.9789957231787437
+            ],
+            "macro_f1_95": [
+              0.5005171761769046,
+              0.6749753163014239
+            ],
+            "yes_recall_95": [
+              0.375,
+              0.6800212765957446
+            ]
+          },
+          "correction": {
+            "method": "percentile bootstrap resampling complete sessions",
+            "sessions": 238,
+            "replicates": 2000,
+            "seed": 42,
+            "agreement_95": [
+              0.9034560687600072,
+              0.9427262852503371
+            ],
+            "macro_f1_95": [
+              0.5345523600915675,
+              0.6775173464699769
+            ],
+            "yes_recall_95": [
+              0.22727272727272727,
+              0.5
+            ]
+          }
+        },
+        "artifact_bytes": 488251791,
+        "runtime": {
+          "device": "cpu",
+          "threads": 8,
+          "load_seconds": 1.3292829999991227,
+          "batch_seconds": 23.248911900001985,
+          "batch_messages_per_second": 58.196271972620124,
+          "latency_sample_messages": 100,
+          "p50_ms": 6.512749998364598,
+          "p95_ms": 92.33447499536847
+        }
+      },
+      {
+        "name": "e5-frozen",
+        "model_version": "1d5f99b79e6c748c3bc306b4bdc004c8089521517ecac9729a56f418449d3dd7",
+        "selected_on_calibration": false,
+        "calibration": {
+          "tasks": {
+            "dissatisfaction": {
+              "messages": 1154,
+              "agreement": 0.9358752166377816,
+              "macro_f1": 0.5195688421494874,
+              "per_class": {
+                "no": {
+                  "precision": 0.9624197983501375,
+                  "recall": 0.9731232622798888,
+                  "f1": 0.967741935483871,
+                  "support": 1079
+                },
+                "yes": {
+                  "precision": 0.5178571428571429,
+                  "recall": 0.47540983606557374,
+                  "f1": 0.49572649572649574,
+                  "support": 61
+                },
+                "unclear": {
+                  "precision": 0.14285714285714285,
+                  "recall": 0.07142857142857142,
+                  "f1": 0.09523809523809523,
+                  "support": 14
+                }
+              },
+              "confusion_matrix": [
+                [
+                  1050,
+                  24,
+                  5
+                ],
+                [
+                  31,
+                  29,
+                  1
+                ],
+                [
+                  10,
+                  3,
+                  1
+                ]
+              ],
+              "nll": 0.19680554085995403,
+              "brier": 0.09939405545964737,
+              "missing_teacher_labels": 3
+            },
+            "correction": {
+              "messages": 1154,
+              "agreement": 0.7339688041594454,
+              "macro_f1": 0.5229695583068268,
+              "per_class": {
+                "no": {
+                  "precision": 0.9611901681759379,
+                  "recall": 0.7550813008130082,
+                  "f1": 0.8457598178713717,
+                  "support": 984
+                },
+                "yes": {
+                  "precision": 0.3348623853211009,
+                  "recall": 0.6636363636363637,
+                  "f1": 0.4451219512195122,
+                  "support": 110
+                },
+                "unclear": {
+                  "precision": 0.1901840490797546,
+                  "recall": 0.5166666666666667,
+                  "f1": 0.27802690582959644,
+                  "support": 60
+                }
+              },
+              "confusion_matrix": [
+                [
+                  743,
+                  132,
+                  109
+                ],
+                [
+                  14,
+                  73,
+                  23
+                ],
+                [
+                  16,
+                  13,
+                  31
+                ]
+              ],
+              "nll": 0.656048839591348,
+              "brier": 0.3736721259389526,
+              "missing_teacher_labels": 3
+            }
+          },
+          "mean_macro_f1": 0.5212692002281571,
+          "mean_yes_f1": 0.47042422347300394
+        },
+        "test": {
+          "tasks": {
+            "dissatisfaction": {
+              "messages": 1348,
+              "agreement": 0.9562314540059347,
+              "macro_f1": 0.5410434054250052,
+              "per_class": {
+                "no": {
+                  "precision": 0.97544128933231,
+                  "recall": 0.9807098765432098,
+                  "f1": 0.9780684878799538,
+                  "support": 1296
+                },
+                "yes": {
+                  "precision": 0.41025641025641024,
+                  "recall": 0.38095238095238093,
+                  "f1": 0.3950617283950617,
+                  "support": 42
+                },
+                "unclear": {
+                  "precision": 0.3333333333333333,
+                  "recall": 0.2,
+                  "f1": 0.25,
+                  "support": 10
+                }
+              },
+              "confusion_matrix": [
+                [
+                  1271,
+                  21,
+                  4
+                ],
+                [
+                  26,
+                  16,
+                  0
+                ],
+                [
+                  6,
+                  2,
+                  2
+                ]
+              ],
+              "nll": 0.14631724716289107,
+              "brier": 0.06938090587909039,
+              "missing_teacher_labels": 5
+            },
+            "correction": {
+              "messages": 1348,
+              "agreement": 0.7729970326409495,
+              "macro_f1": 0.5049070034517872,
+              "per_class": {
+                "no": {
+                  "precision": 0.9756838905775076,
+                  "recall": 0.7906403940886699,
+                  "f1": 0.8734693877551021,
+                  "support": 1218
+                },
+                "yes": {
+                  "precision": 0.22705314009661837,
+                  "recall": 0.5875,
+                  "f1": 0.32752613240418116,
+                  "support": 80
+                },
+                "unclear": {
+                  "precision": 0.2077922077922078,
+                  "recall": 0.64,
+                  "f1": 0.3137254901960784,
+                  "support": 50
+                }
+              },
+              "confusion_matrix": [
+                [
+                  963,
+                  150,
+                  105
+                ],
+                [
+                  16,
+                  47,
+                  17
+                ],
+                [
+                  8,
+                  10,
+                  32
+                ]
+              ],
+              "nll": 0.555718347074844,
+              "brier": 0.3111697180286842,
+              "missing_teacher_labels": 5
+            }
+          },
+          "mean_macro_f1": 0.5229752044383962,
+          "mean_yes_f1": 0.36129393039962143
+        },
+        "intervals": {
+          "dissatisfaction": {
+            "method": "percentile bootstrap resampling complete sessions",
+            "sessions": 238,
+            "replicates": 2000,
+            "seed": 42,
+            "agreement_95": [
+              0.9387282424635917,
+              0.9707944942811102
+            ],
+            "macro_f1_95": [
+              0.4487345768297224,
+              0.6269080097301241
+            ],
+            "yes_recall_95": [
+              0.23333333333333334,
+              0.5178736772486772
+            ]
+          },
+          "correction": {
+            "method": "percentile bootstrap resampling complete sessions",
+            "sessions": 238,
+            "replicates": 2000,
+            "seed": 42,
+            "agreement_95": [
+              0.741983501600591,
+              0.8043030752908978
+            ],
+            "macro_f1_95": [
+              0.4548754016711571,
+              0.5595122407590679
+            ],
+            "yes_recall_95": [
+              0.4657475200755786,
+              0.7045547690014903
+            ]
+          }
+        },
+        "artifact_bytes": 493822441,
+        "runtime": {
+          "device": "cpu",
+          "threads": 8,
+          "load_seconds": 1.0040193000022555,
+          "batch_seconds": 23.40508399999817,
+          "batch_messages_per_second": 57.80795317804054,
+          "latency_sample_messages": 100,
+          "p50_ms": 6.17920000149752,
+          "p95_ms": 86.44648500085165
+        }
+      },
+      {
+        "name": "tfidf",
+        "model_version": "a3f166a2c887254edf448de262f132eed177f417c8320d4588d123173116d9df",
+        "selected_on_calibration": false,
+        "calibration": {
+          "tasks": {
+            "dissatisfaction": {
+              "messages": 1154,
+              "agreement": 0.9445407279029463,
+              "macro_f1": 0.5593686757128788,
+              "per_class": {
+                "no": {
+                  "precision": 0.9636363636363636,
+                  "recall": 0.9823911028730306,
+                  "f1": 0.9729233593391464,
+                  "support": 1079
+                },
+                "yes": {
+                  "precision": 0.6086956521739131,
+                  "recall": 0.45901639344262296,
+                  "f1": 0.5233644859813084,
+                  "support": 61
+                },
+                "unclear": {
+                  "precision": 0.25,
+                  "recall": 0.14285714285714285,
+                  "f1": 0.18181818181818182,
+                  "support": 14
+                }
+              },
+              "confusion_matrix": [
+                [
+                  1060,
+                  14,
+                  5
+                ],
+                [
+                  32,
+                  28,
+                  1
+                ],
+                [
+                  8,
+                  4,
+                  2
+                ]
+              ],
+              "nll": 0.20449571859007837,
+              "brier": 0.09579468740572906,
+              "missing_teacher_labels": 3
+            },
+            "correction": {
+              "messages": 1154,
+              "agreement": 0.8648180242634316,
+              "macro_f1": 0.5394003366759131,
+              "per_class": {
+                "no": {
+                  "precision": 0.9170731707317074,
+                  "recall": 0.9552845528455285,
+                  "f1": 0.9357889497262319,
+                  "support": 984
+                },
+                "yes": {
+                  "precision": 0.5393258426966292,
+                  "recall": 0.43636363636363634,
+                  "f1": 0.4824120603015075,
+                  "support": 110
+                },
+                "unclear": {
+                  "precision": 0.25,
+                  "recall": 0.16666666666666666,
+                  "f1": 0.2,
+                  "support": 60
+                }
+              },
+              "confusion_matrix": [
+                [
+                  940,
+                  33,
+                  11
+                ],
+                [
+                  43,
+                  48,
+                  19
+                ],
+                [
+                  42,
+                  8,
+                  10
+                ]
+              ],
+              "nll": 0.3966190937219313,
+              "brier": 0.208331947498949,
+              "missing_teacher_labels": 3
+            }
+          },
+          "mean_macro_f1": 0.549384506194396,
+          "mean_yes_f1": 0.5028882731414079
+        },
+        "test": {
+          "tasks": {
+            "dissatisfaction": {
+              "messages": 1348,
+              "agreement": 0.9510385756676558,
+              "macro_f1": 0.4985690725875236,
+              "per_class": {
+                "no": {
+                  "precision": 0.9746153846153847,
+                  "recall": 0.9776234567901234,
+                  "f1": 0.9761171032357473,
+                  "support": 1296
+                },
+                "yes": {
+                  "precision": 0.35135135135135137,
+                  "recall": 0.30952380952380953,
+                  "f1": 0.3291139240506329,
+                  "support": 42
+                },
+                "unclear": {
+                  "precision": 0.18181818181818182,
+                  "recall": 0.2,
+                  "f1": 0.19047619047619047,
+                  "support": 10
+                }
+              },
+              "confusion_matrix": [
+                [
+                  1267,
+                  21,
+                  8
+                ],
+                [
+                  28,
+                  13,
+                  1
+                ],
+                [
+                  5,
+                  3,
+                  2
+                ]
+              ],
+              "nll": 0.17343053026098362,
+              "brier": 0.08274610788809676,
+              "missing_teacher_labels": 5
+            },
+            "correction": {
+              "messages": 1348,
+              "agreement": 0.8976261127596439,
+              "macro_f1": 0.5595631674063047,
+              "per_class": {
+                "no": {
+                  "precision": 0.9410815173527038,
+                  "recall": 0.9573070607553367,
+                  "f1": 0.9491249491249492,
+                  "support": 1218
+                },
+                "yes": {
+                  "precision": 0.3918918918918919,
+                  "recall": 0.3625,
+                  "f1": 0.37662337662337664,
+                  "support": 80
+                },
+                "unclear": {
+                  "precision": 0.42857142857142855,
+                  "recall": 0.3,
+                  "f1": 0.35294117647058826,
+                  "support": 50
+                }
+              },
+              "confusion_matrix": [
+                [
+                  1166,
+                  36,
+                  16
+                ],
+                [
+                  47,
+                  29,
+                  4
+                ],
+                [
+                  26,
+                  9,
+                  15
+                ]
+              ],
+              "nll": 0.30764546036669993,
+              "brier": 0.15807435835545405,
+              "missing_teacher_labels": 5
+            }
+          },
+          "mean_macro_f1": 0.5290661199969142,
+          "mean_yes_f1": 0.35286865033700476
+        },
+        "intervals": {
+          "dissatisfaction": {
+            "method": "percentile bootstrap resampling complete sessions",
+            "sessions": 238,
+            "replicates": 2000,
+            "seed": 42,
+            "agreement_95": [
+              0.9335287863222925,
+              0.965492871869657
+            ],
+            "macro_f1_95": [
+              0.4204285822885499,
+              0.5640981983787222
+            ],
+            "yes_recall_95": [
+              0.16981132075471697,
+              0.4722222222222222
+            ]
+          },
+          "correction": {
+            "method": "percentile bootstrap resampling complete sessions",
+            "sessions": 238,
+            "replicates": 2000,
+            "seed": 42,
+            "agreement_95": [
+              0.8775913234731608,
+              0.9164405313868734
+            ],
+            "macro_f1_95": [
+              0.49797208713935165,
+              0.6145033669654668
+            ],
+            "yes_recall_95": [
+              0.24136334610472543,
+              0.4767486583184258
+            ]
+          }
+        },
+        "artifact_bytes": 21681030,
+        "runtime": {
+          "device": "cpu",
+          "threads": 8,
+          "load_seconds": 0.46639300000242656,
+          "batch_seconds": 0.6653468000004068,
+          "batch_messages_per_second": 2033.5259747235168,
+          "latency_sample_messages": 100,
+          "p50_ms": 11.316949996398762,
+          "p95_ms": 13.16621500045585
+        }
+      }
+    ],
+    "test_messages": 1353,
+    "test_sessions": 238,
+    "majority_baseline": {
+      "labels": {
+        "dissatisfaction": "no",
+        "correction": "no"
+      },
+      "test": {
+        "tasks": {
+          "dissatisfaction": {
+            "messages": 1348,
+            "agreement": 0.9614243323442137,
+            "macro_f1": 0.3267776096822996,
+            "per_class": {
+              "no": {
+                "precision": 0.9614243323442137,
+                "recall": 1.0,
+                "f1": 0.9803328290468987,
+                "support": 1296
+              },
+              "yes": {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "support": 42
+              },
+              "unclear": {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "support": 10
+              }
+            },
+            "confusion_matrix": [
+              [
+                1296,
+                0,
+                0
+              ],
+              [
+                42,
+                0,
+                0
+              ],
+              [
+                10,
+                0,
+                0
+              ]
+            ],
+            "nll": 1.0658850875580745,
+            "brier": 0.0771513353115727,
+            "missing_teacher_labels": 5
+          },
+          "correction": {
+            "messages": 1348,
+            "agreement": 0.9035608308605341,
+            "macro_f1": 0.31644583008573657,
+            "per_class": {
+              "no": {
+                "precision": 0.9035608308605341,
+                "recall": 1.0,
+                "f1": 0.9493374902572097,
+                "support": 1218
+              },
+              "yes": {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "support": 80
+              },
+              "unclear": {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "support": 50
+              }
+            },
+            "confusion_matrix": [
+              [
+                1218,
+                0,
+                0
+              ],
+              [
+                80,
+                0,
+                0
+              ],
+              [
+                50,
+                0,
+                0
+              ]
+            ],
+            "nll": 2.6647127188951867,
+            "brier": 0.19287833827893175,
+            "missing_teacher_labels": 5
+          }
+        },
+        "mean_macro_f1": 0.32161171988401804,
+        "mean_yes_f1": 0.0
+      }
+    },
+    "scope": "Agreement with frozen automatic Qwen labels, not independent gold. No Qwen calls during student inference."
+  },
+  "unresolved_audit": {
+    "input_limit": 5,
+    "response_did_not_finish_normally": 19,
+    "evidence_not_exact_substring": 1
+  },
+  "export_verification": {
+    "messages": 1353,
+    "probability_max_abs_difference": 5.51448351426842e-08,
+    "label_mismatches": 0,
+    "cpu_threads": 8,
+    "passed": true,
+    "model_version": "311651567e9dc936b3703084c316eb6dacc963ac01a75340df9eedfd4361566d"
+  },
+  "qwen_restored": {
+    "checked_at": "2026-09-15T22:05:29.201843+00:00",
+    "expected_model_available": true,
+    "model_id": "qwen38-ud-q4-k-xl"
+  }
+}
