@@ -159,6 +159,24 @@ def remaining_estimate(base):
         finished = {r["input_id"] for r in read_jsonl(base / "pilot/labels.jsonl")}
     remaining = max(0, design["canonical_messages"] - len(finished))
     mean = sum(durations) / len(durations) if durations else pilot["mean_seconds_per_call"]
+    estimate_source = "completed_journal_calls"
+    # A changed GPU execution mode can change throughput; prefer its completed trial.
+    trials = sorted(
+        (base / "runtime-validation").glob("*/stability.json"),
+        key=lambda p: p.stat().st_mtime,
+        reverse=True,
+    )
+    for path in trials:
+        trial = read(path)
+        summary = trial["teacher"]
+        if (
+            summary["successful_calls"] >= 32
+            and not summary.get("stopped_due_to_transport")
+            and not summary["unattempted_calls"]
+        ):
+            mean = trial["mean_seconds_per_completed_call"]
+            estimate_source = str(path.relative_to(base))
+            break
     # Conservative serial estimate also remains safe when a deployment allows concurrency.
     seconds = remaining * mean * 1.35 + 2400
     now = datetime.now(timezone.utc)
@@ -166,6 +184,7 @@ def remaining_estimate(base):
         "remaining_or_retry_calls": remaining,
         "completed_cached_calls": len(finished),
         "mean_seconds_per_call": mean,
+        "estimate_source": estimate_source,
         "conservative_remaining_seconds_with_training": seconds,
         "measured_at": now.isoformat(),
         "estimated_completion": (now + timedelta(seconds=seconds)).isoformat(),
