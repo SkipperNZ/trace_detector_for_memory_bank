@@ -15,6 +15,7 @@ linear = ["numpy>=1.26,<3", "scikit-learn>=1.6,<2"]
 ml = ["numpy>=1.26,<3", "scikit-learn>=1.6,<2", "sentence-transformers>=5.4,<6", "torch>=2.6,<3"]
 dataset = ["pyarrow>=17,<25"]
 experiments = ["matplotlib>=3.9,<4", "psutil>=7,<8"]
+gliner = ["gliner2[local]==2.0.0", "numpy>=1.26,<3", "scikit-learn>=1.6,<2"]
 dev = ["black>=24.10,<27"]
 
 [project.scripts]

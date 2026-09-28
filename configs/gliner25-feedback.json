@@ -1,0 +1,54 @@
+{
+  "version": "gliner25-feedback-v1",
+  "model": "fastino/GLiNER2.5-Decide",
+  "revision": "5a7adf72a23b4d311abae6ce050d7f0012bb3416",
+  "gliner2_version": "2.0.0",
+  "max_content_tokens": 512,
+  "max_encoded_tokens": 1024,
+  "batch_size": 8,
+  "document_batch_size": 16,
+  "aggregations": ["max", "mean"],
+  "selection": "Highest calibration mean macro-F1 across both tasks; then mean yes F1; then lexicographic name. No test tuning.",
+  "recall_targets": [0.8, 0.9],
+  "bootstrap_replicates": 2000,
+  "latency_sample_messages": 100,
+  "seed": 42,
+  "schemas": {
+    "compact": {
+      "dissatisfaction": {
+        "instruction": "Does this user message express explicit dissatisfaction with the AI assistant or its work?",
+        "labels": {
+          "no": "No explicit complaint about the assistant. Ordinary requests, calm corrections and external problems are not dissatisfaction.",
+          "yes": "The user explicitly complains, reproaches, expresses frustration or disappointment with the assistant's work.",
+          "unclear": "A possible complaint, but its target or meaning cannot be established from the message."
+        }
+      },
+      "correction": {
+        "instruction": "Does this user message identify a mistake in the AI assistant's previous work, including a calm correction?",
+        "labels": {
+          "no": "An initial problem, new request or preference, without saying the assistant previously made a mistake.",
+          "yes": "An explicit error, omission, violated earlier requirement or unresolved defect in the assistant's previous work.",
+          "unclear": "A possible correction of prior assistant work, but indistinguishable from a new request without missing context."
+        }
+      }
+    },
+    "rubric": {
+      "dissatisfaction": {
+        "instruction": "Classify only the user's own message about an AI assistant. Previous conversation is unavailable. Technical failure words alone do not imply dissatisfaction. A calm correction is not dissatisfaction. Ordinary requests are no even without history. Do not treat quoted complaints as the user's own complaint.",
+        "labels": {
+          "no": "Ordinary instruction, calm correction, new preference, praise, external problem, quoted complaint, or no explicit dissatisfaction with the assistant.",
+          "yes": "Explicit complaint, reproach, irritation, disappointment or sarcastic criticism directed at the assistant or its work.",
+          "unclear": "A possibly qualifying complaint whose addressee or meaning cannot be established without missing context."
+        }
+      },
+      "correction": {
+        "instruction": "Classify whether the user corrects the AI assistant's previous work. Previous conversation is unavailable. Calm wording still qualifies. A new bug-solving request alone does not. 'Change the color to blue' is no; 'You used red although I requested blue' is yes. Ordinary requests do not become unclear solely because history is missing.",
+        "labels": {
+          "no": "Initial bug-solving request, new feature or preference, ordinary follow-up, or no assertion that prior assistant work was wrong.",
+          "yes": "Explicitly identifies a mistake, omission, violated earlier requirement or still-unresolved defect in the assistant's previous output or action, or asks to repair that identified mistake.",
+          "unclear": "A plausible reference to a faulty prior answer or action, but insufficient context to distinguish correction from a new request."
+        }
+      }
+    }
+  }
+}
